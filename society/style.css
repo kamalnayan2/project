@@ -10,9 +10,8 @@ div{
     color: #000000;
 }
 header {
-    background-color: #09bd18;
-    color: rgb(14, 176, 20);
-    padding: 10px 20px;
+    height: 100px;
+    padding: 30px 20px;
     text-align: left;
 }
 

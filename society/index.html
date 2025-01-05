@@ -15,56 +15,49 @@
         integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-    <link rel="stylesheet" href="menu.css">
+    <link rel="stylesheet" href="menu/menu.css">
 
 </head>
 
 <body>
     <header>
-        <h1>Society Management System</h1>
-    </header>
-    <div class="menu">
-        <label>
-            <input type="checkbox">
-            <div class="toggle">
-                <span class="top_line common"></span>
-                <span class="middle_line common"></span>
-                <span class="bottom_line common"></span>
+    <nav class="navbar bg-body-tertiary fixed-top">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Society Management System</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Society</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
-            <div class="slide">
-                <h1>MENU</h1>
-                <ul>
-                    <li><a href="adminlogin.html"><i class="fa fa-user-plus"></i>Admin Login</a></li>
-                    <li><a href="userlogin.html"><i class="fa fa-users"></i>Members Login</a></li>
-                    <li>
-                        <a href="#maintenance"><i class="fa fa-building"></i>Maintenance Requests</a>
-                    </li>
-                    <li>
-                        <a href="#facilities"><i class="fa fa-users"></i>Facilities</a>
-                    </li>
-                    <li>
-                        <a href="#booking"><i class="fa fa-calendar"></i>Booking Facilities</a>
-                    </li>
-                    <li>
-                        <a href="#finance"><i class="fa fa-balance-scale"></i>Financial Records</a>
-                    </li>
-                    <li>
-                        <a href="#events"><i class="	fa fa-edit"></i>Events</a>
-                    </li>
-                    <li>
-                        <a href="#complaints"><i class="fa fa-comment"></i>Complaints</a>
-                    </li>
-                </ul>
-            </div>
-        </label>
-    </div>
-    <main>
-        <div>
-            <marquee>
-                <p class="welcome-message">Welcome to Your Dashboard</p>
-            </marquee>
-        </div>
+            <div class="offcanvas-body">
+              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href="login/adminlogin.php"><i class="fa fa-users"></i>Login</a>
+                </li>
 
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="login/register/adminregister.php"><i class="fa fa-user-plus"></i>Signup</a>
+                  </li>
+                
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"><i class='fa fa-phone'></i>Contact us</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#"><i class="fa fa-comment"></i>Feedback</a>
+                  </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <br/><br/><br/>
+    <main>
+        
         <div class="quick-links">
             <a href="#book-facility">Book Facility</a>
             <a href="#submit-request">Submit Request</a>

@@ -1,7 +1,7 @@
 :root {
-    --background: #1a1a2e;
-    --color: #ffffff;
-    --primary-color: #0f3460;
+    --background: #fffffffb;
+    --color: #060606;
+    --primary-color: #093e80;
 }
 
 * {
@@ -166,7 +166,7 @@ h1 {
     justify-content: space-between;
 }
 .opacity {
-    opacity: 0.8;
+    opacity: 1;
     text-align: justify;
 }
 

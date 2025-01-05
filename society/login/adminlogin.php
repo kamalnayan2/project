@@ -14,20 +14,24 @@
                 <img src="https://raw.githubusercontent.com/hicodersofficial/glassmorphism-login-form/master/assets/illustration.png" alt="illustration" class="illustration" />
                 <h1 class="opacity">ADMIN LOGIN</h1>
                 <form>
-                    <input type="text" placeholder="USERNAME" />
-                    <input type="password" placeholder="PASSWORD" />
+                    <input type="text" placeholder="USERNAME" name="uname"/>
+                    <input type="password" placeholder="PASSWORD" name="passwd"/>
                     <button class="opacity">SUBMIT</button>
                 </form>
                 <div class="register-forget opacity">
-                    <a href="">REGISTER</a>
-                    <a href="">FORGOT PASSWORD</a>
+                    <a href="register/adminregister.html">REGISTER</a>
                 </div>
             </div>
             <div class="circle circle-two"></div>
         </div>
-        
         <div class="theme-btn-container"></div>
     </section>
     <script src="login.js"></script>
 </body>
 </html>
+
+<?php
+$username=$_POST['uname'];
+ 
+
+?>
