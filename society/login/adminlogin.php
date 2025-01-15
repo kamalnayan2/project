@@ -19,7 +19,7 @@
                     <button class="opacity">SUBMIT</button>
                 </form>
                 <div class="register-forget opacity">
-                    <a href="register/adminregister.html">REGISTER</a>
+                    <a href="register/adminregister.php">REGISTER</a>
                 </div>
             </div>
             <div class="circle circle-two"></div>
