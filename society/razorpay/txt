@@ -1,0 +1,305 @@
+Certainly! Below is a simple and clean UI for the maintenance payment system using Razorpay, built with Bootstrap. This version will focus on a straightforward layout while utilizing Bootstrap for styling.
+
+### Step 1: Create the Payment Form (index.php)
+
+Here’s the `index.php` file that includes a clean UI for selecting maintenance fees and making a payment using Bootstrap.
+
+```php
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Maintenance Payment</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Pay Maintenance Fee</h1>
+        <div class="form-group">
+            <label for="maintenance-select">Select Maintenance</label>
+            <select id="maintenance-select" class="form-control" required>
+                <option value="">Select Maintenance</option>
+            </select>
+        </div>
+        <button id="pay-button" class="btn btn-primary" disabled>Pay Now</button>
+    </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // Fetch maintenance records
+        fetch('fetch_maintenance.php')
+            .then(response => response.json())
+            .then(data => {
+                const select = document.getElementById('maintenance-select');
+                data.forEach(record => {
+                    const option = document.createElement('option');
+                    option.value = record.MID;
+                    option.setAttribute('data-price', record.price);
+                    option.setAttribute('data-description', record.Description);
+                    option.textContent = `${record.Description} - ₹${record.price}`;
+                    select.appendChild(option);
+                });
+            });
+
+        document.getElementById('maintenance-select').addEventListener('change', function() {
+            document.getElementById('pay-button').disabled = !this.value;
+        });
+
+        document.getElementById('pay-button').addEventListener('click', function() {
+            const select = document.getElementById('maintenance-select');
+            const selectedOption = select.options[select.selectedIndex];
+            const amount = selectedOption.getAttribute('data-price');
+
+            // Create a new Razorpay order
+            fetch('payment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ amount: amount })
+            })
+            .then(response => response.json())
+            .then(data => {
+                var options = {
+                    key: 'YOUR_RAZORPAY_KEY_ID', // Enter the Key ID generated from the Dashboard
+                    amount: data.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise or ₹ 500.
+                    currency: data.currency,
+                    name: 'Maintenance Payment',
+                    description: selectedOption.getAttribute('data-description'),
+                    order_id: data.id, // This is the id of the created order
+                    handler: function (response) {
+                        // Handle successful payment
+                        fetch('save_transaction.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                order_id: data.id,
+                                payment_id: response.razorpay_payment_id,
+                                amount: amount,
+                                status: 'Success',
+                                maintenance_id: selectedOption.value // Send the maintenance ID
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(transactionData => {
+                            alert('Payment successful! Transaction ID: ' + transactionData.id);
+                        });
+                    },
+                    prefill: {
+                        name: 'Your Name',
+                        email: 'your.email@example.com',
+                        contact: '9999999999'
+                    },
+                    theme: {
+                        color: '#F37254'
+                    }
+                };
+                const rzp1 = new Razorpay(options);
+                rzp1.open();
+            });
+        });
+    </script>
+</body>
+</html>
+```
+
+### Step 2: Fetch Maintenance Data (fetch_maintenance.php)
+
+This file retrieves maintenance records from the database.
+
+```php
+<?php
+// ```php
+// Database connection
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "database_name";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch maintenance records
+$sql = "SELECT MID, Description, price FROM maintenance";
+$result = $conn->query($sql);
+
+$maintenance_records = array();
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $maintenance_records[] = $row;
+    }
+}
+
+$conn->close();
+
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode($maintenance_records);
+?>
+```
+
+### Step 3: Create Payment Order (payment.php)
+
+This file creates a new payment order with Razorpay.
+
+```php
+<?php
+// Include Razorpay PHP SDK
+require('razorpay-php/Razorpay.php');
+
+use Razorpay\Api\Api;
+
+$keyId = 'YOUR_RAZORPAY_KEY_ID';
+$keySecret = 'YOUR_RAZORPAY_KEY_SECRET';
+
+$api = new Api($keyId, $keySecret);
+
+// Get the amount from the request
+$data = json_decode(file_get_contents('php://input'), true);
+$amount = $data['amount'] * 100; // Convert to paise
+
+$orderData = [
+    'receipt'         => rand(1000, 9999),
+    'amount'          => $amount,
+    'currency'        => 'INR',
+    'payment_capture' => 1 // Auto capture
+];
+
+$order = $api->order->create($orderData);
+
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode([
+    'id' => $order['id'],
+    'amount' => $order['amount'],
+    'currency' => $order['currency']
+]);
+?>
+```
+
+### Step 4: Save Transaction (save_transaction.php)
+
+This file saves the transaction details after payment.
+
+```php
+<?php
+// Database connection
+$servername = "localhost";
+$username = "username";
+$password = "password";
+$dbname = "database_name";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Get the transaction data from the request
+$data = json_decode(file_get_contents('php://input'), true);
+
+$order_id = $data['order_id'];
+$payment_id = $data['payment_id'];
+$amount = $data['amount'];
+$status = $data['status'];
+$maintenance_id = $data['maintenance_id'];
+
+// Insert transaction into the database
+$sql = "INSERT INTO transactions (order_id, payment_id, amount, status, maintenance_id) VALUES (?, ?, ?, ?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ssiss", $order_id, $payment_id, $amount, $status, $maintenance_id);
+$stmt->execute();
+
+$stmt->close();
+$conn->close();
+
+// Return JSON response
+header('Content-Type: application/json');
+echo json_encode(['id' => $payment_id]);
+?>
+``` ### Step 5: Create Database Tables
+
+To support the above functionality, you need to create the necessary database tables. Below are the SQL statements to create the `maintenance` and `transactions` tables.
+
+```sql
+CREATE TABLE maintenance (
+    MID INT AUTO_INCREMENT PRIMARY KEY,
+    Description VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE transactions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id VARCHAR(255) NOT NULL,
+    payment_id VARCHAR(255) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    maintenance_id INT NOT NULL,
+    FOREIGN KEY (maintenance_id) REFERENCES maintenance(MID)
+);
+```
+
+### Step 6: Populate Maintenance Table
+
+You can insert some sample data into the `maintenance` table to test the payment system.
+
+```sql
+INSERT INTO maintenance (Description, price) VALUES
+('Monthly Maintenance Fee', 500.00),
+('Annual Maintenance Fee', 6000.00),
+('Special Maintenance Fee', 1500.00);
+```
+
+### Step 7: Testing the Application
+
+1. Ensure your database is set up and the tables are created.
+2. Populate the `maintenance` table with sample data.
+3. Update the Razorpay key ID and secret in the `payment.php` file.
+4. Open `index.php` in your browser to test the payment functionality.
+5. Select a maintenance fee and click "Pay Now" to initiate the payment process.
+
+### Step 8: Error Handling
+
+Consider adding error handling in your JavaScript and PHP files to manage any issues that may arise during the payment process or database interactions. This will improve the user experience and help in debugging.
+
+```javascript
+// Example error handling in the payment button click event
+document.getElementById('pay-button').addEventListener('click', function() {
+    // ... existing code ...
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing your payment. Please try again.');
+    });
+});
+```
+
+### Conclusion
+
+This setup provides a simple yet effective maintenance payment system using Razorpay and Bootstrap. You can further enhance the UI and functionality based on your requirements.

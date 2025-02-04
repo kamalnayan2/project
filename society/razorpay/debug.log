@@ -1,0 +1,26 @@
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+)
+Array
+(
+    [order_id] => order_PrFPmO6tmTlwhe
+    [payment_id] => pay_PrFPy0TMmfjHnR
+    [amount] => 60000
+    [maintenance_id] => 1
+)
+Array
+(
+    [order_id] => order_PrFoxsiukUOLm7
+    [payment_id] => pay_PrFpCqCGfIeCcy
+    [amount] => 70000
+    [maintenance_id] => 5
+)
