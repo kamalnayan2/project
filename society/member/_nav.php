@@ -13,14 +13,7 @@
 </head>
 
 <body>
-  <!-- <div class="sidebar flex-shrink-0">
-            <h4 class="p-3">Member Dashboard</h4>
-            <a href="#profile"></a>
-            <a href="#maintenance-requests">Maintenance Requests</a>
-            <a href="#financial-records">Financial Records</a>
-            <a href="#events">Events</a>
-            <a href="#complaints">Complaints</a>
-        </div> -->
+  
   <nav class="navbar bg-body-black fixed-top">
     <div class="container-fluid">
       Society Management System
@@ -35,7 +28,7 @@
         <div class="offcanvas-body">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="..//razorpay/index.php"><i class="fa fa-paypal"></i>Profile</a>
+              <a class="nav-link active" aria-current="page" href="profile.php"><i class="fa fa-paypal"></i>Profile</a>
             </li>
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="../login/request.php"><i class="fa fa-building"></i>Maintenance Requests</a>
@@ -50,7 +43,7 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="../login/logout.php"><i class="fa fa-sign-out"></i>LogOut</a>
+              <a class="nav-link active" aria-current="page" href="logout.php"><i class="fa fa-sign-out"></i>LogOut</a>
             </li>
           </ul>
         </div>

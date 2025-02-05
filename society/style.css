@@ -113,6 +113,19 @@ footer {
     height: 48px;
     background-color: gray;
     border-radius: 40%;
-    opacity: 100%;
-    
+    opacity: 100%;   
+}
+footer{
+    opacity: .9;
+}
+
+footer #feedback,#contact-us{
+    opacity: 1;
+    background-color: #b0a4a4;
+}
+form input,textarea{
+    border: 1px solid #000000;
+    padding: 10px; 
+    width: 100%; 
+    box-sizing: border-box;
 }

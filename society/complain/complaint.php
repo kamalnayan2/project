@@ -5,6 +5,7 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<?php require "../member/_nav.php";?>
   <div class="container">
     <h1>Complaints Database</h1>
     <table class="table table-striped" id="complaintsTable">

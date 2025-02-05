@@ -27,29 +27,26 @@
             <div class="offcanvas-body">
               <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                 <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="#"><i class="fa fa-building"></i>Maintenance Requests</a>
+                  <a class="nav-link active" aria-current="page" href="../login/request.php"><i class="fa fa-building"></i>Maintenance Requests</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="login/register/adminregister.html"><i  class="fa fa-users"></i>Facilities</a>
-                  </li>
-                
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#"><i class="fa fa-calendar"></i>Booking Facilities</a>
-                  </li>
 
                   <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#"><i class="fa fa-balance-scale"></i>Financial Records</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#"><i  class="	fa fa-edit"></i>Events</a>
+                    <a class="nav-link active" aria-current="page" href="..//razorpay/index.php"><i class="fa fa-paypal"></i>Pay Maintenance</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#"><i class="fa fa-comment"></i>Complaints</a>
+                    <a class="nav-link active" aria-current="page" href="../admin/generate_bill.php"><i class="fa fa-paypal"></i>generate Maintenance</a>
                   </li>
 
                   <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="../index.html"><i class="fa fa-comment"></i>LogOut</a>
+                    <a class="nav-link active" aria-current="page" href="..//complain/complaint.php"><i class="fa fa-comment"></i>Complaints</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="../login/logout.php"><i class="fa fa-sign-out"></i>LogOut</a>
                   </li>
               </ul>
             </div>

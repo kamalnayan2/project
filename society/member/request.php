@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: login.php'); 
+    exit();
+}
         // Display message after form submission
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Database connection parameters
@@ -22,9 +27,9 @@
                         echo "<div class='alert alert-danger'>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</div>";
                     } else {
                         // Move the uploaded file to the target directory
-                        // if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imagePath)) {
-                            // echo "<div class='alert alert-danger'>Sorry, there was an error uploading your file.</div>";
-                        // }
+                        if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imagePath)) {
+                            echo "<div class='alert alert-danger'>Sorry, there was an error uploading your file.</div>";
+                        }
                     }
                 }
 
@@ -52,6 +57,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
+<?php require "_nav.php";?>
     <div class="container mt-5">
         <h1 class="text-center">Maintenance Request Form</h1>
         <form action="" method="POST" enctype="multipart/form-data">
@@ -74,7 +80,8 @@
                 <?php
                 // Fetch and display requests
                 include "../partials/db_connect.php";
-                $result = pg_query($conn, "SELECT * FROM requests  ORDER BY created_at DESC");
+                $id=$_SESSION['user_id'];
+                $result = pg_query($conn, "SELECT * FROM requests where member_id=$id ORDER BY created_at DESC");
                 while ($row = pg_fetch_assoc($result)) {
                     echo "<li class='list-group-item'>{$row['description']} - Status: {$row['status']}</li>";
                 }

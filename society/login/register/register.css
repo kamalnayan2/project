@@ -9,7 +9,7 @@
 
 body{
     height: 110vh;
-    /* display: flexbox; */
+    display: flex;
     justify-content: center;
     align-items: center;
     padding: 10px;
@@ -18,7 +18,7 @@ body{
 
 .container{
     max-width: 700px;
-    width: 100%;
+    width: 80%;
     background-color: #FFF;
     padding: 25px 30px;
     border-radius: 5px;

@@ -1,26 +1,20 @@
 <?php
-$host = "localhost";
-$dbname = "society";
-$user = "postgres";
-$password = "kamal";
-
-$conn = pg_connect("host=$host dbname=$dbname user=$user password=$password");
-if (!$conn) {
-  die("Error in connection: " . pg_last_error());
-}
+include "../../login/database/connet_pg.php";
 
 $showAlert = false;
 $showError = false;
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   $name = $_POST["fname"];
-  $uname = $_POST['uname'];
-  $email = $_POST["email"];
-  $phone = $_POST["pno"];
-  $address = $_POST["gender"];
-  $password = $_POST["pass"];
-  $cpassword = $_POST["cpass"];
+$uname = $_POST['uname'];
+$email = $_POST["email"];
+$phone = $_POST["pno"];
+$address = $_POST["gender"];
+$password = $_POST["pass"];
+$cpassword = $_POST["cpass"];
 
+ 
   // Check if passwords match
   if ($password == $cpassword) {
       // Check if username or email already exists
@@ -29,12 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       
       if (pg_num_rows($result) > 0) {
           $showError = "Username or email already exists.";
-      } else {
-          // Hash the password
-          $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-          
-          // Prepare the insert statement
-          $sql = "INSERT INTO admine (username, password, address, mobileno, name, email) VALUES ('$uname', '$hashedPassword', '$address', '$phone', '$name', '$email')";
+      }
+       else {
+          $sql = "INSERT INTO admine (username, password, address, mobileno, name, email) VALUES ('$uname', '$password', '$address', '$phone', '$name', '$email')";
           $result = pg_query($conn, $sql);
           
           if ($result) {
@@ -66,10 +57,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <?php
 if($showAlert)
 {
-
   echo '<div class="alert alert-success" role="alert">
    <h4 class="alert-heading">Well done!</h4>
   <p> you have successfully register .</p>
+  </div>';
+  // header('Location:..//adminlogin.php');
+}
+elseif($showError){
+  echo '<div class="alert alert-danger" role="alert">
+  <h4 class="alert-heading">'.$showError.'</h4>
   </div>';
 }
 ?>
@@ -83,39 +79,39 @@ if($showAlert)
             <!-- Input for Full Name -->
             <div class="input-box">
               <span class="details">Full Name</span>
-              <input type="text" placeholder="Enter your full name" required name="fname">
+              <input type="text" placeholder="Enter your full name" name="fname" required >
              </div>
           <!-- Input for Username -->
           <div class="input-box">
             <span class="details">Username</span>
-            <input type="text" placeholder="Enter your username" required name="uname">
+            <input type="text" placeholder="Enter your username"  name="uname" required>
           </div>
           <!-- Input for Email -->
           <div class="input-box">
             <span class="details">Email</span>
-            <input type="text" placeholder="Enter your email" required name="email">
+            <input type="text" placeholder="Enter your email"  name="email" required>
           </div>
             <!-- Input for Phone Number -->
             <div class="input-box">
               <span class="details">Phone Number</span>
-              <input type="text" placeholder="Enter your number" required name="pno">
+              <input type="text" placeholder="Enter your number"  name="pno" required pattern="[0-9]{10}">
             </div>
             <!-- Input for Password -->
             <div class="input-box">
               <span class="details">Password</span>
-              <input type="text" placeholder="Enter your password" required name="pass">
+              <input type="text" placeholder="Enter your password"  name="pass" required>
             </div>
             <!-- Input for Confirm Password -->
             <div class="input-box">
               <span class="details">Confirm Password</span>
-              <input type="text" placeholder="Confirm your password" required name="cpass">
+              <input type="text" placeholder="Confirm your password"  name="cpass" required>
             </div>
           </div>
           <div class="gender-details">
             <!-- Radio buttons for gender selection -->
             <input type="radio" name="gender" id="dot-1" value="male">
             <input type="radio" name="gender" id="dot-2" value="female">
-            <input type="radio" name="gender" id="dot-3"value="non">
+            <input type="radio" name="gender" id="dot-3" value="non">
             <span class="gender-title">Gender</span>
             <div class="category">
               <!-- Label for Male -->
@@ -143,5 +139,6 @@ if($showAlert)
       </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  
   </body>
 </html>

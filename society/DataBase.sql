@@ -65,4 +65,61 @@ CREATE TABLE Events (
     Date DATE,
     Description TEXT
 );
+ALTER TABLE admine ALTER COLUMN password TYPE character varying(255);
+ALTER TABLE admine ALTER COLUMN email TYPE character varying(100);
 
+
+ALTER TABLE admine ALTER COLUMN admineid ADD GENERATED ALWAYS AS IDENTITY;
+
+CREATE or replace TABLE events (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    event_date DATE NOT NULL,
+    event_time VARCHAR(50) NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL
+);
+
+CREATE TABLE requests (
+    id SERIAL PRIMARY KEY,
+    description TEXT NOT NULL,
+    status VARCHAR(50) NOT NULL DEFAULT 'Pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    image_path VARCHAR(255) -- Optional: to store the path of the uploaded image
+);
+
+CREATE TABLE payments (
+    id SERIAL PRIMARY KEY,
+    amount NUMERIC NOT NULL,
+    currency VARCHAR(10) NOT NULL,
+    payment_id VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE balances (
+    MemberID INT PRIMARY KEY,
+    balance NUMERIC NOT NULL,
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID) ON DELETE CASCADE
+);
+ALTER TABLE payments ADD COLUMN member_id INT REFERENCES balances(MemberID);
+
+CREATE TABLE Events (
+    id SERIAL PRIMARY KEY,
+    event_name VARCHAR(255) NOT NULL,
+    event_date DATE NOT NULL,
+    event_time TIME NOT NULL,
+    location VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE maintenance_requests
+ADD COLUMN member_id INTEGER;
+
+-- Assuming you have a members table with member_id as the primary key
+ALTER TABLE maintenance_requests
+ADD CONSTRAINT fk_member
+FOREIGN KEY (member_id) REFERENCES members(member_id);
