@@ -1,8 +1,10 @@
 <?php
 include_once 'partials/db_connect.php';
-$que="select * from events";
-$result = pg_query($conn,$que);
-$event=pg_fetch_assoc($result);
+$eventQuery = "SELECT event_name, event_date, event_time, location, description 
+                FROM Events 
+                WHERE event_date >= CURRENT_DATE 
+                ORDER BY event_date, event_time";
+$eventResult = pg_query($conn, $eventQuery);
 
 ?>
 <!DOCTYPE html>
@@ -24,33 +26,29 @@ $event=pg_fetch_assoc($result);
     </style>
 </head>
 <div class="container mt-5">
-    <h1 class="text-center mb-4">Upcoming Events</h1>
-    <div class="row" id="event-container">
-    <?php
-        // Loop through events and display them
-        foreach ($event as $index => $event) {
-            // Create a new row every 3 events
-            if ($index % 3 === 0) {
-                echo '<div class="row mb-4">';
-            }
-
-            // Create a card for each event
-            echo '<div class="col-md-4">';
-            echo '<div class="card">';
-            echo '<div class="card-body">';
-            echo '<h5 class="card-title">' . htmlspecialchars($event['title']) . '</h5>';
-            echo '<p class="card-text"><strong>Date:</strong> ' . htmlspecialchars($event['event_date']) . '</p>';
-            echo '<p class="card-text"><strong>Time:</strong> ' . htmlspecialchars($event['event_time']) . '</p>';
-            echo '<p class="card-text"><strong>Location:</strong> ' . htmlspecialchars($event['location']) . '</p>';
-            echo '<p class="card-text">' . htmlspecialchars($event['description']) . '</p>';
-            echo '</div></div></div>';
-
-            // Close the row after every 3 events
-            if ($index % 3 === 2 || $index === count($events) - 1) {
-                echo '</div>'; // Close the row
-            }
-        }
-        ?>
+<h3 class="text-center mt-6">Upcoming Events</h3>
+                <div class="row">
+                    <?php if ($eventResult && pg_num_rows($eventResult) > 0): ?>
+                        <?php while ($event = pg_fetch_assoc($eventResult)): ?>
+                            <div class="row-lg" style="margin-top: 30px;">
+                                <div class="card event-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><?php echo htmlspecialchars($event['event_name']); ?></h5>
+                                        <h6 class="card-subtitle mb-2 text-muted center">
+                                            <?php echo date('F j, Y', strtotime($event['event_date'])) . ' at ' . date('g:i A', strtotime($event['event_time'])); ?>
+                                        </h6>
+                                        <p class="card-text"><?php echo htmlspecialchars($event['description']); ?></p>
+                                        <p class="card-text"><small class="text-muted">Location: <?php echo htmlspecialchars($event['location']); ?></small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="col-12">
+                            <div class="alert alert-info text-center">No upcoming events found.</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
         </div>
 </div>
 

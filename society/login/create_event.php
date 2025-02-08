@@ -1,3 +1,38 @@
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Database connection parameters
+    $host = "localhost";
+    $dbname = "society";
+    $user = "postgres";
+    $password = "kamal";
+
+    $conn = pg_connect("host=$host dbname=$dbname user=$user password=$password");
+    if (!$conn) {
+        die("Error in connection: " . pg_last_error());
+    }
+
+    // Get form data
+    $eventName = $_POST['eventName'];
+    $eventDate = $_POST['eventDate'];
+    $eventTime = $_POST['eventTime'];
+    $eventLocation = $_POST['eventLocation'];
+    $eventDescription = $_POST['eventDescription'];
+    $notes = $_POST['notes'];
+
+    // Prepare and execute the insert statement
+    $insertQuery = "INSERT INTO Events (event_name, event_date, event_time, location, description, notes) VALUES ($1, $2, $3, $4, $5, $6)";
+    $insertResult = pg_query_params($conn, $insertQuery, array($eventName, $eventDate, $eventTime, $eventLocation, $eventDescription, $notes));
+
+    if ($insertResult) {
+        echo "<div class='alert alert-success mt-3'>Event created successfully!</div>";
+    } else {
+        echo "<div class='alert alert-danger mt-3'>Error creating event: " . pg_last_error() . "</div>";
+    }
+
+    // Close the database connection
+    pg_close($conn);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,6 +46,7 @@
         .container {
             margin-top: 50px;
         }
+
         h2 {
             margin-bottom: 30px;
         }
@@ -37,7 +73,7 @@
                 <label for="eventLocation">Location</label>
                 <input type="text" class="form-control" id="eventLocation" name="eventLocation" required>
             </div>
-            <div class ="form-group">
+            <div class="form-group">
                 <label for="eventDescription">Description</label>
                 <textarea class="form-control" id="eventDescription" name="eventDescription" rows="3" required></textarea>
             </div>
@@ -46,45 +82,10 @@
                 <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Create Event</button>
+            <a href="home.php">back Home</a>
         </form>
 
-        <?php
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Database connection parameters
-            $host = "localhost";
-            $dbname = "society";
-            $user = "postgres";
-            $password = "kamal";
 
-            $conn = pg_connect("host=$host dbname=$dbname user=$user password=$password");
-            if (!$conn) {
-                die("Error in connection: " . pg_last_error());
-            }
-
-            // Get form data
-            $eventName = $_POST['eventName'];
-            $eventDate = $_POST['eventDate'];
-            $eventTime = $_POST['eventTime'];
-            $eventLocation = $_POST['eventLocation'];
-            $eventDescription = $_POST['eventDescription'];
-            $notes = $_POST['notes'];
-
-            // Prepare and execute the insert statement
-            $insertQuery = "INSERT INTO Events (event_name, event_date, event_time, location, description, notes) VALUES ($1, $2, $3, $4, $5, $6)";
-            $insertResult = pg_query_params($conn, $insertQuery, array($eventName, $eventDate, $eventTime, $eventLocation, $eventDescription, $notes));
-
-            if ($insertResult) {
-                echo "<div class='alert alert-success mt-3'>Event created successfully!</div>";
-            } else {
-                echo "<div class='alert alert-danger mt-3'>Error creating event: " . pg_last_error() . "</div>";
-            }
-
-            // Close the database connection
-            pg_close($conn);
-        }else{
-            echo "<div class='alert alert-danger mt-3'>Invalid request method!</div>";
-        }
-        ?>
     </div>
 
     <!-- Bootstrap JS and dependencies -->

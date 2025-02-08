@@ -38,7 +38,7 @@ pg_close($conn);
                     <option value="">Select Maintenance</option>
                     <?php foreach ($maintenanceRecords as $record): ?>
                         <option value="<?= $record['maintenance_id'] ?>" data-price="<?= $record['amount'] ?>">
-                            <?= htmlspecialchars($record['maintenance_id']) ?> - ₹<?= $record['amount'] ?>
+                            <?= htmlspecialchars($record['member_id']) ?> - ₹<?= $record['amount'] ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

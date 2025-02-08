@@ -4,34 +4,39 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $mobile = $_POST['mob'];
-    error_log("Username: " . $username); // Debugging statement
-
     $password = $_POST['passwd'];
 
+    // Debugging statements
+    error_log("Mobile: " . $mobile); // Log the mobile number
+    error_log("Password: " . $password); // Log the password (consider removing this in production)
+
     // Prepare the SQL statement
-    $query = "SELECT * FROM member WHERE mobileno = $1 AND password = $2";
+    $query = "SELECT * FROM member WHERE mobileno = $1";
     $result = pg_prepare($conn, "my_query", $query);
-    $result = pg_execute($conn, "my_query", array($mobile, $password));
+    $result = pg_execute($conn, "my_query", array($mobile));
 
     if (!$result) {
         error_log("Query failed: " . pg_last_error($conn)); // Debugging statement
-
         echo "An error occurred while executing the query."; 
         exit; 
     }
 
-    $arr = pg_fetch_array($result, 0, PGSQL_NUM);
-    // error_log("Query result: " . print_r($arr, true)); // Debugging statement
+    $arr = pg_fetch_array($result, 0, PGSQL_ASSOC);
 
-    
-    // Check if user exists and verify password
+    // Check if user exists
     if ($arr) {
-        // Set session variables
-        $_SESSION['user_id'] = $arr[0]; // Assuming 'id' is the primary key
-        header("Location: dashboard.php"); // Redirect to home page
-        exit();
+        // Assuming the password is stored in plain text (not recommended)
+        // If the password is hashed, use password_verify() instead
+        if ($arr['password'] === $password) {
+            // Set session variables
+            $_SESSION['user_id'] = $arr['memberid']; // Assuming 'memberid' is the primary key
+            header("Location: dashboard.php"); // Redirect to home page
+            exit();
+        } else {
+            echo "Invalid password.";
+        }
     } else {
-        echo "Invalid username or password.";
+        echo "Invalid mobile number.";
     }
 }
 ?>
@@ -49,9 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <div class="circle circle-one"></div>
             <div class="form-container">
                 <h1 class="opacity">USER LOGIN</h1>
-                <form action=" " method="post">
-                    <input type="text" placeholder="MOBILE NUMBER" name="mob" />
-                    <input type="password" placeholder="PASSWORD" name="passwd"/>
+                <form action="login.php" method="post">
+                    <input type="text" placeholder="MOBILE NUMBER" name="mob" required />
+                    <input type="password" placeholder="PASSWORD" name="passwd" required />
                     <button class="opacity">SUBMIT</button>
                 </form>
                 <div class="register-forget opacity">

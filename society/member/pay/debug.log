@@ -38,3 +38,10 @@ Array
     [amount] => 60000
     [maintenance_id] => 4
 )
+Array
+(
+    [order_id] => order_Ps54bTQlJWYuE2
+    [payment_id] => pay_Ps56iByboiC2NC
+    [amount] => 70000
+    [maintenance_id] => 7
+)

@@ -49,6 +49,9 @@ pg_close($conn);
 <body>
     <div class="container">
         <h1 class="text-center">Payment History</h1>
+        <div class="text-center mb-3">
+            <button class="btn btn-success" onclick="window.print()">Print Receipts</button>
+        </div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -58,12 +61,13 @@ pg_close($conn);
                     <th>Amount (₹)</th>
                     <th>Status</th>
                     <th>Date</th>
+                    <th>Receipt</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($transactions)): ?>
                     <tr>
-                        <td colspan="6" class="text-center">No transactions found.</td>
+                        <td colspan="7" class="text-center">No transactions found.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($transactions as $transaction): ?>
@@ -74,6 +78,9 @@ pg_close($conn);
                             <td><?= htmlspecialchars(number_format($transaction['amount'], 2)) ?></td>
                             <td><?= htmlspecialchars($transaction['status']) ?></td>
                             <td><?= htmlspecialchars(date('Y-m-d H:i:s', strtotime($transaction['created_at']))) ?></td>
+                            <td>
+                                <a href="receipt.php?payment_id=<?= urlencode($transaction['payment_id']) ?>" class="btn btn-info">View Receipt</a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>

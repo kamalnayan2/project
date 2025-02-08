@@ -1,48 +1,49 @@
 <?php
-        // Display message after form submission
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Database connection parameters
-            include "../partials/db_connect.php";
-            // Get the issue description and sanitize it
-            $issueDescription = trim($_POST['issueDescription']);
-            if (empty($issueDescription)) {
-                echo "<div class='alert alert-danger'>Issue description is required.</div>";
+// Display message after form submission
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Database connection parameters
+    include "../partials/db_connect.php";
+    // Get the issue description and sanitize it
+    $issueDescription = trim($_POST['issueDescription']);
+    if (empty($issueDescription)) {
+        echo "<div class='alert alert-danger'>Issue description is required.</div>";
+    } else {
+        // Handle file upload
+        $imagePath = null;
+        if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] == UPLOAD_ERR_OK) {
+            $targetDir = "uploads/"; // Directory to save uploaded images
+            $fileName = basename($_FILES['imageUpload']['name']);
+            $imagePath = $targetDir . $fileName;
+
+            // Validate file type (e.g., allow only JPEG and PNG)
+            $fileType = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
+            $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
+            if (!in_array($fileType, $allowedTypes)) {
+                echo "<div class='alert alert-danger'>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</div>";
             } else {
-                // Handle file upload
-                $imagePath = null;
-                if (isset($_FILES['imageUpload']) && $_FILES['imageUpload']['error'] == UPLOAD_ERR_OK) {
-                    $targetDir = "uploads/"; // Directory to save uploaded images
-                    $fileName = basename($_FILES['imageUpload']['name']);
-                    $imagePath = $targetDir . $fileName;
-
-                    // Validate file type (e.g., allow only JPEG and PNG)
-                    $fileType = strtolower(pathinfo($imagePath, PATHINFO_EXTENSION));
-                    $allowedTypes = ['jpg', 'jpeg', 'png', 'gif'];
-                    if (!in_array($fileType, $allowedTypes)) {
-                        echo "<div class='alert alert-danger'>Sorry, only JPG, JPEG, PNG & GIF files are allowed.</div>";
-                    } else {
-                        // Move the uploaded file to the target directory
-                        // if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imagePath)) {
-                            // echo "<div class='alert alert-danger'>Sorry, there was an error uploading your file.</div>";
-                        // }
-                    }
-                }
-
-                // Prepare and execute the insert statement
-                $sql = "INSERT INTO requests (description, image_path) VALUES ($1, $2)";
-                $result = pg_query_params($conn, $sql, array($issueDescription, $imagePath));
-
-                if ($result) {
-                    echo "<div class='alert alert-success'>New request submitted successfully.</div>";
-                } else {
-                    echo "<div class='alert alert-danger'>Error: " . pg_last_error($conn) . "</div>";
+                // Move the uploaded file to the target directory
+                if (!move_uploaded_file($_FILES['imageUpload']['tmp_name'], $imagePath)) {
+                    echo "<div class='alert alert-danger'>Sorry, there was an error uploading your file.</div>";
                 }
             }
-
-            // Close the connection
-            pg_close($conn);
         }
-        ?>
+
+        // Prepare and execute the insert statement
+        $sql = "INSERT INTO requests (description, image_path) VALUES ($1, $2)";
+        $result = pg_query_params($conn, $sql, array($issueDescription, $imagePath));
+
+        if ($result) {
+            echo "<div class='alert alert-success'>New request submitted successfully.</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error: " . pg_last_error($conn) . "</div>";
+        }
+    }
+
+    // Close the connection
+    pg_close($conn);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -53,39 +54,68 @@
 </head>
 <body>
     <div class="container mt-5">
-        <h1 class="text-center">Maintenance Request Form</h1>
-        <form action="" method="POST" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="issueDescription">Description of Issue:</label>
-                <textarea id="issueDescription" name="issueDescription" class="form-control" rows="4" required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="imageUpload">Upload Image:</label>
-                <input type="file" id="imageUpload" name="imageUpload" class="form-control-file" accept="image/*">
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit Request</button>
-        </form>
-
         <h2 class="mt-5">Request Status</h2>
         <div id="requestStatus">
-            <ul class="list-group">
-                <?php
-                // Fetch and display requests
-                include "../partials/db_connect.php";
-                $result = pg_query($conn, "SELECT * FROM requests  ORDER BY created_at DESC");
-                while ($row = pg_fetch_assoc($result)) {
-                    echo "<li class='list-group-item'>{$row['description']} - Status: {$row['status']}</li>";
-                }
-                pg_close($conn);
-                ?>
-            </ul>
+            <table class="table table-striped" id="complaintsTable">
+                <thead>
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    // Fetch and display requests
+                    include "../partials/db_connect.php";
+                    $result = pg_query($conn, "SELECT * FROM requests ORDER BY created_at DESC");
+                    while ($row = pg_fetch_assoc($result)) {
+                        echo "<tr>
+                                <td>{$row['id']}</td>
+                                <td>{$row['description']}</td>
+                                <td><img src='{$row['image_path']}' alt='Image' style='width: 100px;'></td>
+                                <td>{$row['status']}</td>
+                                <td>
+                                    <button class='btn btn-primary' onclick='updateStatus({$row['id']})'>Update Status</button>
+                                </td>
+                              </tr>";
+                    }
+                    pg_close($conn);
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function updateStatus(requestId) {
+            const newStatus = prompt("Enter new status:");
+            if (newStatus) {
+                $.ajax({
+    url: 'update_status.php',
+    method: 'POST',
+    data: { requestId: requestId, status: newStatus },
+    success: function(response) {
+        console.log(response); // Log the response
+        if (response.success) {
+            alert('Status updated successfully!');
+            location.reload(); // Refresh the page to see the updated status
+        } else {
+            alert('Error updating status: ' + response.error);
+        }
+    },
+    error: function(xhr, status, error) {
+        console.error(xhr.responseText); // Log the error response
+        alert('Error updating status: ' + error);
+    }
+});
+            }
+        }
+    </script>
 </body>
 </html>

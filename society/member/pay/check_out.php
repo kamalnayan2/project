@@ -23,7 +23,7 @@ $maintenance_id = $_SESSION['maintenance_id'];
             "key": "rzp_test_5DRM9K9ZYvhm14", // Enter the Key ID generated from the Dashboard
             "amount": <?= $amount ?>, // Amount is in currency subunits. Default is in paise.
             "currency": "INR",
-            "name": "VIJAY PRATAP",
+            "name": "SOCIETY",
             "description": "Maintenance Payment",
             "order_id": "<?= $order_id ?>", // Pass the `id` obtained in the previous step
             "handler": function (response) {
@@ -40,8 +40,12 @@ $maintenance_id = $_SESSION['maintenance_id'];
                 
                 xhr.send(data);
                 xhr.onload = function() {
-                    alert(xhr.responseText);
-                    window.location.href = "index.php"; // Redirect after processing
+                    if (xhr.status === 200) {
+                        // Redirect to the receipt page
+                        window.location.href = "download_receipt.php?order_id=" + response.razorpay_order_id + "&payment_id=" + response.razorpay_payment_id;
+                    } else {
+                        alert("Error processing payment. Please try again.");
+                    }
                 };
             },
             "theme": {

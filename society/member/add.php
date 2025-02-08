@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (pg_num_rows($result) > 0) {
       $showError = "Username or flatno already exists.";
     } else {
-      $sql = "INSERT INTO member (name, flatno, mobileno, password) VALUES ('$name','$flatno','$phone','$password')";
+      $sql = "INSERT INTO member (name, flatno, mobileno, password,area) VALUES ('$name','$flatno','$phone','$password','$area')";
       $result = pg_query($conn, $sql);
 
       if ($result) {
@@ -83,7 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <!-- Input for Roomno -->
           <div class="input-box">
             <span class="details">Room No</span>
-            <input type="text" placeholder="Enter your name" name='ln' required>
+            <input type="text" placeholder="Enter your name" name='rno' required>
           </div>
           <!-- Input for Room Type -->
           <div class="input-box">

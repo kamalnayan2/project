@@ -8,34 +8,44 @@
     integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
   <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-  <link rel="stylesheet" href="../menu/menu.css">
+  <!-- <link rel="stylesheet" href="../menu/menu.css"> -->
+   <style>
+    ul li:hover a{
+    color: #fff;
+    background-color: #8000ff;
+}
+   </style>
 
 </head>
 
 <body>
   
-  <nav class="navbar bg-body-black fixed-top">
+  <nav class="navbar bg-body-black fixed-top navbar-light" style="background-color: #1692EBFF;">
     <div class="container-fluid">
       Society Management System
       <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Society</h5>
+        <div class="offcanvas-header" style="background-color: #1C5781FF;">
+          <h4 class="offcanvas-title" id="offcanvasNavbarLabel">Society</h4>
           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
-        <div class="offcanvas-body">
+        <div class="offcanvas-body" style="background-color: #1C5781FF;">
           <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="profile.php"><i class="fa fa-paypal"></i>Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="../login/request.php"><i class="fa fa-building"></i>Maintenance Requests</a>
+              <a class="nav-link active" aria-current="page" href="request.php"><i class="fa fa-building"></i>Maintenance Requests</a>
             </li>
 
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="..//razorpay/index.php"><i class="fa fa-paypal"></i>Pay Maintenance</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="pay/history.php"><i class="fa fa-paypal"></i>payment history</a>
             </li>
 
             <li class="nav-item">

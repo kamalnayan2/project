@@ -9,8 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['maintenance_id'])) {
 $amount = floatval($_POST['amount']) * 100; // Convert to paise
 $maintenance_id = $_POST['maintenance_id'];
 
-$apiKey = 'rzp_test_5DRM9K9ZYvhm14';
-$apiSecret = '5fIJOWrbZ8Cz7wGbvo3y2CE1';
+$apiKey = 'id';
+$apiSecret = 'key';
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, "https://api.razorpay.com/v1/orders");
